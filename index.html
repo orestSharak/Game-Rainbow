@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ua">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0">
+    <title>Closures</title>
+    <style>
+
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300&display=swap');
+
+        body {
+            background: hsla(298, 68%, 90%, 1);
+            background: linear-gradient(90deg, hsla(298, 68%, 90%, 1) 0%, hsla(30, 82%, 91%, 1) 100%);
+            background: -moz-linear-gradient(90deg, hsla(298, 68%, 90%, 1) 0%, hsla(30, 82%, 91%, 1) 100%);
+            background: -webkit-linear-gradient(90deg, hsla(298, 68%, 90%, 1) 0%, hsla(30, 82%, 91%, 1) 100%);
+            filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#F6D5F7", endColorstr="#FBE9D7", GradientType=1);
+
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            padding: 0;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .spacer-50 {
+            margin-top: 50px;
+        }
+
+        .spacer-25 {
+            margin-top: 25px;
+        }
+
+        .font-color-black {
+            color: black;
+            opacity: .7;
+            letter-spacing: 2px;
+        }
+
+        #app, .card, .button-wrapper {
+            width: 35vw;
+        }
+
+        .card {
+            display: -webkit-box;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 0 solid #f1f4f8;
+            border-radius: 0.375rem;
+            height: 50vh;
+            box-shadow: 0 2rem 5rem rgb(22 28 45 / 10%), 0 0.5rem 1rem -0.75rem rgb(22 28 45 / 5%) !important;
+            text-transform: uppercase;
+            font-size: 2.5rem;
+            color: black;
+
+        }
+
+        .button-wrapper {
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+        }
+
+        .button-wrapper button, input {
+
+            background: transparent;
+            padding: 10px 15px;
+            font-size: 1.25em;
+            text-align: center;
+            width: 48%;
+            text-transform: uppercase;
+            transition: all .3s;
+            letter-spacing: 1px;
+        }
+
+        .button-wrapper button:hover {
+            background-color: black;
+            color: white;
+        }
+
+        input {
+            font-weight: bold;
+            width: 100%;
+        }
+
+        input:focus {
+            outline: none;
+        }
+
+        @media only screen and (max-width: 1200px) {
+            #app, .card, .button-wrapper {
+                width: 65vw;
+            }
+        }
+
+        @media only screen and (max-width: 414px) {
+
+            #app {
+
+            }
+
+            #app, .button-wrapper, .card {
+                width: calc(100vw - 2rem);
+            }
+
+            .button-wrapper button {
+                font-size: 1em;
+            }
+
+            .card {
+                font-size: 1.25em;
+            }
+
+            input {
+                font-size: 1em;
+            }
+
+        }
+
+    </style>
+</head>
+<body>
+
+<main>
+    <aside class="card">
+        <div id="app"></div>
+    </aside>
+
+    <section class="button-wrapper spacer-50">
+        <button id="start">розпочати</button>
+        <button id="stop">закінчити</button>
+    </section>
+    <section class="button-wrapper spacer-25">
+        <input oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" value="1500"
+               id="time" title="time"/>
+    </section>
+
+</main>
+
+<script>
+
+    const log = console.log;
+    const body = document.querySelector('body');
+    let app = document.getElementById('app');
+    let time = document.getElementById('time');
+    let text = document.getElementById('text');
+
+
+    let arrColors = ['#F94144', '#90BE6D', '#00bbf9', '#fee440', '#F8961E'];
+    let arrKeys = ['червоний', 'зелений', 'синій', 'жовтий', 'помаранчевий', 'хлопок'];
+
+
+    function random() {
+        let randomElement = arrKeys[Math.floor((Math.random() * arrKeys.length))];
+        let randomColor = arrColors[Math.floor((Math.random() * arrColors.length))];
+        app.innerHTML += `<h1 id="text" class="card font-color-black" style="background-color: ${randomColor}">${randomElement}</h1>`;
+        setTimeout(() => {
+            document.getElementById('text').remove();
+    }, time.value - 500)
+    }
+
+    let intId;
+
+    let start = () => {
+
+        if (time.value.length > 3 && !intId) {
+            random();
+            log(time.value);
+            intId = setInterval(() => random(), time.value);
+            log('click start');
+        }
+
+        if (!intId) {
+            log('more');
+            time.value = 'Не менше ніж 1000мс';
+            body.style.pointerEvents = "none";
+            setTimeout(() => {
+                time.value = '1000';
+            body.style.pointerEvents = "auto";
+
+        }, 1500);
+        }
+
+    };
+
+    let stop = () => {
+        clearInterval(intId);
+        intId = null;
+        log('click stop');
+    };
+
+    time.addEventListener("focus", stop);
+    document.getElementById("start").addEventListener("click", start);
+    document.getElementById("stop").addEventListener("click", stop);
+    document.addEventListener('visibilitychange', () => document.hidden ? stop() : '');
+
+
+</script>
+</body>
+</html>
