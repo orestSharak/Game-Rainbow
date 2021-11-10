@@ -58,7 +58,7 @@
 
         }
 
-        .button-wrapper {
+        .wrapper {
 
             display: flex;
             justify-content: space-between;
@@ -66,7 +66,7 @@
 
         }
 
-        .button-wrapper button, input {
+        .wrapper button, input {
 
             background: transparent;
             padding: 10px 15px;
@@ -78,8 +78,17 @@
             letter-spacing: 1px;
         }
 
-        .button-wrapper button:hover {
+        .wrapper button:hover {
             background-color: black;
+            color: white;
+        }
+
+        .lang button {
+            width: 30%;
+        }
+
+        .active {
+            background-color: black !important;
             color: white;
         }
 
@@ -93,7 +102,7 @@
         }
 
         @media only screen and (max-width: 1200px) {
-            #app, .card, .button-wrapper {
+            #app, .card, .wrapper {
                 width: 65vw;
             }
         }
@@ -104,11 +113,11 @@
 
             }
 
-            #app, .button-wrapper, .card {
+            #app, .wrapper, .card {
                 width: calc(100vw - 2rem);
             }
 
-            .button-wrapper button {
+            .wrapper button {
                 font-size: 1em;
             }
 
@@ -127,15 +136,21 @@
 <body>
 
 <main>
-    <aside class="card">
+    <section id="lang" class="wrapper lang">
+        <button id="en" >En</button>
+        <button id="ua">Ua</button>
+        <button id="ru">Ru</button>
+    </section>
+
+    <aside class="card spacer-25">
         <div id="app"></div>
     </aside>
 
-    <section class="button-wrapper spacer-50">
-        <button id="start">розпочати</button>
-        <button id="stop">закінчити</button>
+    <section class="wrapper spacer-50">
+        <button id="start"></button>
+        <button id="stop"></button>
     </section>
-    <section class="button-wrapper spacer-25">
+    <section class="wrapper spacer-25">
         <input oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" value="1500"
                id="time" title="time"/>
     </section>
@@ -149,20 +164,103 @@
     let app = document.getElementById('app');
     let time = document.getElementById('time');
     let text = document.getElementById('text');
+    let lang = document.getElementById('lang');
+    let startBtn = document.getElementById('start');
+    let stopBtn = document.getElementById('stop');
 
+
+    // Arrays with values
 
     let arrColors = ['#F94144', '#90BE6D', '#00bbf9', '#fee440', '#F8961E'];
-    let arrKeys = ['червоний', 'зелений', 'синій', 'жовтий', 'помаранчевий', 'хлопок'];
+
+    let arrKeysUa = ['червоний', 'зелений', 'синій', 'жовтий', 'помаранчевий', 'хлопок'];
+    let arrKeysRu = ['красный', 'зеленый', 'синий', 'желтый', 'оранжевый', 'хлопок'];
+    let arrKeysEn = ['red', 'green', 'blue', 'yellow', 'orange', 'clap'];
+
+    let arrStringUa = ['Не менше ніж 1000мс'];
+    let arrStringRu = ['Не меньше чем 1000мс'];
+    let arrStringEn = ['Not less then 1000ms'];
+
+    let arrButtonUa = ['розпочати', 'закінчити'];
+    let arrButtonRu = ['начать', 'закончить'];
+    let arrButtonEn = ['start', 'stop'];
 
 
-    function random() {
+    // default language with values
+
+    let arrKeys = [...arrKeysUa];
+    let arrString = [...arrStringUa];
+    let arrButtonText = [...arrButtonUa];
+
+
+    // function to switch the languages
+
+    let switchLang = (e) => {
+
+        // add and remove active class
+        let activeItem = document.querySelector('.active');
+        if (activeItem) {
+            activeItem.classList.remove('active');
+        }
+        e.target.classList.add('active');
+
+        if (e.target.id === 'ua') {
+            stop();
+            arrKeys = [...arrKeysUa];
+            arrString = [...arrStringUa];
+            arrButtonText = [...arrButtonUa];
+            log(arrKeys);
+            log(arrString);
+            log(arrButtonText);
+            buttonText();
+
+        }
+        if (e.target.id === 'en') {
+            stop();
+            arrKeys = [...arrKeysEn];
+            arrString = [...arrStringEn];
+            arrButtonText = [...arrButtonEn];
+            log(arrKeys);
+            log(arrString);
+            log(arrButtonText);
+            buttonText();
+        }
+        if (e.target.id === 'ru') {
+            stop();
+            arrKeys = [...arrKeysRu];
+            arrString = [...arrStringRu];
+            arrButtonText = [...arrButtonRu];
+            log(arrKeys);
+            log(arrString);
+            log(arrButtonText);
+            buttonText();
+        }
+    };
+
+
+    // function to change text of buttons
+
+    let buttonText = () => {
+        startBtn.textContent = arrButtonText.slice(0, 1).join('');
+        stopBtn.textContent = arrButtonText.slice(1, 2).join('');
+    };
+
+    buttonText();
+
+
+    // function to add random colors and names
+
+    let random = () => {
         let randomElement = arrKeys[Math.floor((Math.random() * arrKeys.length))];
         let randomColor = arrColors[Math.floor((Math.random() * arrColors.length))];
         app.innerHTML += `<h1 id="text" class="card font-color-black" style="background-color: ${randomColor}">${randomElement}</h1>`;
         setTimeout(() => {
             document.getElementById('text').remove();
-    }, time.value - 500)
-    }
+        }, time.value - 500)
+    };
+
+
+    //  Start and Stop functions
 
     let intId;
 
@@ -170,20 +268,20 @@
 
         if (time.value.length > 3 && !intId) {
             random();
-            log(time.value);
+            log('time value: ', time.value);
             intId = setInterval(() => random(), time.value);
-            log('click start');
+            log('click btn start');
         }
 
         if (!intId) {
             log('more');
-            time.value = 'Не менше ніж 1000мс';
+            time.value = arrString.join('');
             body.style.pointerEvents = "none";
             setTimeout(() => {
-                time.value = '1000';
-            body.style.pointerEvents = "auto";
+                time.value = '1500';
+                body.style.pointerEvents = "auto";
 
-        }, 1500);
+            }, 1500);
         }
 
     };
@@ -191,12 +289,16 @@
     let stop = () => {
         clearInterval(intId);
         intId = null;
-        log('click stop');
+        log('click btn stop');
     };
 
-    time.addEventListener("focus", stop);
-    document.getElementById("start").addEventListener("click", start);
-    document.getElementById("stop").addEventListener("click", stop);
+
+    // hanging all Event Listeners
+
+    lang.addEventListener('click', switchLang);
+    time.addEventListener('focus', stop);
+    startBtn.addEventListener('click', start);
+    stopBtn.addEventListener('click', stop);
     document.addEventListener('visibilitychange', () => document.hidden ? stop() : '');
 
 
