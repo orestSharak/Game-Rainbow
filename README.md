@@ -1,5 +1,8 @@
 Play on https://orestsharak.github.io/Game-Rainbow/ 
 
+<img width="1728" height="956" alt="game" src="https://github.com/user-attachments/assets/be7f5d0c-5b8c-4761-962c-8eb480a75224" />
+
+
 EN: The game is based on the famous test of psychologist John Ridley Stroop. Stroop effect aimed at creating additional neural interhemispheric connections in the brain.
 
 Color words (for example, “blue”, “red”, “green”) appear on the screen in a rectangle of a different color.
